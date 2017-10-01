@@ -133,6 +133,7 @@ li label {
 li span,
 li input[type=text]:first-child {
   display: block;
+  text-align: center;
 }
 
 li button {

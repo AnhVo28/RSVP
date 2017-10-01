@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Counter from './Counter';
 import GuestList from './GuestList';
 
 
@@ -11,15 +12,18 @@ class App extends Component {
     guests: [
       {
         name: 'Tresure',
-        isConfirmed: false
+        isConfirmed: false,
+        isEditing: false
       },
       {
         name: 'Nic',
-        isConfirmed: false
+        isConfirmed: false,
+        isEditing: false
       },
       {
         name: 'Ryan Vo',
-        isConfirmed: true
+        isConfirmed: true,
+        isEditing: false
       },
     ]
   }
@@ -28,13 +32,15 @@ class App extends Component {
   // getAttendingGuest =() =>
   // gitUnconfirmedGuests=() =>
 
-  toggleConfirmationAt= (indexToChange)=>{
+
+
+  togglePropertyAt = (property, indexToChange)=>{
     this.setState({
       guests: this.state.guests.map((guest, index)=>{
         if(indexToChange === index){
           return {
             ...guest,
-            isConfirmed: !guest.isConfirmed
+            [property]: !guest[property]
           }
         }
         return guest;
@@ -42,6 +48,27 @@ class App extends Component {
     })
   }
 
+  toggleConfirmationAt= (index)=>{
+    this.togglePropertyAt("isConfirmed", index)
+  }
+
+  getEdit = (index)=>{
+    this.togglePropertyAt("isEditing", index)
+  }
+
+  setNameAt = (name, indexToChange)=>{
+    this.setState({
+      guests: this.state.guests.map((guest, index)=>{
+        if(indexToChange === index){
+          return {
+            ...guest,
+            name
+          }
+        }
+        return guest;
+      })
+    })
+  }
   render() {
     return (
       <div className="App">
@@ -60,23 +87,13 @@ class App extends Component {
               <input type="checkbox"/> Hide those who haven't responded
             </label>
           </div>
-          <table className="counter">
-            <tbody>
-              <tr>
-                <td>Attending:</td>
-                <td>2</td>
-              </tr>
-              <tr>
-                <td>Unconfirmed:</td>
-                <td>1</td>
-              </tr>
-              <tr>
-                <td>Total:</td>
-                <td>3</td>
-              </tr>
-            </tbody>
-          </table>
-          <GuestList guests={this.state.guests} toggleConfirmationAt={this.toggleConfirmationAt}/>
+          <Counter getTotalInvited = {this.getTotalInvited} />
+          <GuestList
+            guests={this.state.guests}
+            toggleConfirmationAt={this.toggleConfirmationAt}
+            getEdit = {this.getEdit}
+            setNameAt = {this.setNameAt}
+            />
         </div>
       </div>
     );

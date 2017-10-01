@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Guest from './Guest';
+import GuestName from './GuestName';
 
 const GuestList = props => {
     return (
@@ -11,6 +12,9 @@ const GuestList = props => {
             name= {guest.name}
             isConfirmed = {guest.isConfirmed}
             handleConfirmation = {()=>props.toggleConfirmationAt(index)}
+            handleEdit = {()=>props.getEdit(index)}
+            isEditing = {guest.isEditing}
+            setName = {(text) => props.setNameAt(text, index)}
              />)}
 
       </ul>
