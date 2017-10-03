@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import AddForm from './AddForm'
 import Counter from './Counter';
 import GuestList from './GuestList';
 
@@ -9,6 +10,8 @@ import GuestList from './GuestList';
 class App extends Component {
 
   state = {
+    isFilter: false,
+    pendingGuest: '',
     guests: [
       {
         name: 'Tresure',
@@ -29,9 +32,22 @@ class App extends Component {
   }
 
   getTotalInvited =()=> this.state.guests.length;
-  // getAttendingGuest =() =>
+  getAttendingGuest =() => {
+    let counter = 0;
+    this.state.guests.map(guest=>{
+      if(guest.isConfirmed){
+        counter++
+      }
+    });
+    return counter;
+  }
   // gitUnconfirmedGuests=() =>
 
+  toggleFilter = ()=>{
+    this.setState({
+      isFilter: !this.state.isFilter
+    })
+  }
 
 
   togglePropertyAt = (property, indexToChange)=>{
@@ -69,30 +85,72 @@ class App extends Component {
       })
     })
   }
+
+  getSubmit = (e)=>{
+    e.preventDefault();
+    this.setState({
+      guests: [
+        {
+          name: this.state.pendingGuest,
+          isConfirmed: false,
+          isEditing: false
+        },
+        ...this.state.guests
+      ],
+      pendingGuest: ''
+    })
+}
+  getRemove = (index)=>{
+    this.setState({
+      guests: [
+        ...this.state.guests.slice(0,index),
+        ...this.state.guests.slice(index+1)
+      ]
+    })
+  }
+
+  onChangeInPedding = (e)=>{
+    this.setState({
+      pendingGuest: e.target.value
+    })
+  }
+
   render() {
+    const totalInvited = this.getTotalInvited();
+    const numberAttending = this.getAttendingGuest();
+    const numberUnconfirm = totalInvited - numberAttending;
     return (
       <div className="App">
         <header>
           <h1>RSVP</h1>
           <p>A Treehouse App</p>
-          <form>
-              <input type="text" value="Safia" placeholder="Invite Someone"/>
-              <button type="submit" name="submit" value="submit">Submit</button>
-          </form>
+            <AddForm
+              getSubmit = {this.getSubmit}
+              onChangeInPedding={this.onChangeInPedding}
+              pendingGuest ={this.state.pendingGuest}
+
+              />
+
         </header>
         <div className="main">
           <div>
             <h2>Invitees</h2>
             <label>
-              <input type="checkbox"/> Hide those who haven't responded
+              <input onChange={this.toggleFilter} type="checkbox"/> Hide those who haven't responded
             </label>
           </div>
-          <Counter getTotalInvited = {this.getTotalInvited} />
+          <Counter
+            totalInvited = {totalInvited}
+            numberAttending={numberAttending}
+            numberUnconfirm={numberUnconfirm} />
           <GuestList
             guests={this.state.guests}
             toggleConfirmationAt={this.toggleConfirmationAt}
             getEdit = {this.getEdit}
             setNameAt = {this.setNameAt}
+            isFilter={this.state.isFilter}
+            getRemove= {this.getRemove}
+            pendingGuest ={this.state.pendingGuest}
             />
         </div>
       </div>

@@ -4,13 +4,22 @@ import GuestName from './GuestName';
 
 
 const Guest = props => {
+  let html = props.isEditing?
+    <input
+      type="text"
+      onChange={e => props.setName(e.target.value)}
+      value={props.name}/>
+    :
+    <span>{props.name}</span>
 
+      // <GuestName
+      //   isEditing ={props.isEditing}
+      //   handleNameEdit = {e => props.setName(e.target.value)}
+      //   >{props.name}</GuestName>
   return (
     <li>
-      <GuestName
-        isEditing ={props.isEditing}
-        handleNameEdit = {e => props.setName(e.target.value)}
-        >{props.name}</GuestName>
+      {html}
+
       <label>
         <input
           type="checkbox"
@@ -21,7 +30,7 @@ const Guest = props => {
       <button onClick={props.handleEdit}>
         {props.isEditing? "Save" : "Edit"}
       </button>
-      <button>remove</button>
+      <button onClick={props.handleRemove}>remove</button>
     </li>
   )
 }

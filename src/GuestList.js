@@ -2,11 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Guest from './Guest';
 import GuestName from './GuestName';
+import PendingGuest from './PendingGuest'
 
 const GuestList = props => {
     return (
       <ul>
-        {props.guests.map((guest, index) =>
+        <PendingGuest name={props.pendingGuest} />
+        {props.guests
+          .filter(guest => !props.isFilter || guest.isConfirmed)
+          .map((guest, index) =>
           <Guest
             key={index}
             name= {guest.name}
@@ -15,8 +19,8 @@ const GuestList = props => {
             handleEdit = {()=>props.getEdit(index)}
             isEditing = {guest.isEditing}
             setName = {(text) => props.setNameAt(text, index)}
+            handleRemove = {()=>props.getRemove(index)}
              />)}
-
       </ul>
     );
 }
